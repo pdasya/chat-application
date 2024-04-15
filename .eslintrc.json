@@ -19,5 +19,13 @@
     },
     "plugins": ["prettier", "import", "@typescript-eslint"],
     "rules": {
+        "prettier/prettier": "warn",
+        "no-debugger": "off",
+        "no-console": "error",
+        "class-methods-use-this": "off",
+        "@typescript-eslint/no-explicit-any": "error",
+        "@typescript-eslint/lines-between-class-members": "off",
+        "import/no-dynamic-require": "off",
+        "import/extensions": "off"
     }
 }

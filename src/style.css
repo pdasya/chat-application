@@ -1,0 +1,85 @@
+@font-face {
+    font-family: Akzidenz;
+    font-weight: 700;
+    font-style: normal;
+    src: url('../src/assets/fonts/AkzidenzGroteskPro-BoldEx.otf') format('opentype');
+}
+@font-face {
+    font-family: Akzidenz;
+    font-weight: 500;
+    font-style: normal;
+    src: url('../src/assets/fonts/AkzidenzGroteskPro-Md.otf') format('opentype');
+}
+@font-face {
+    font-family: Akzidenz;
+    font-weight: 400;
+    font-style: normal;
+    src: url('../src/assets/fonts/AkzidenzGroteskPro-Regular.otf') format('opentype');
+}
+
+body, html {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f0f0f0;
+    font-family: Akzidenz, sistem-ui, sans-serif;
+    background-image: url('../src/assets/images/background-image.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+h2 {
+    margin: 0;
+}
+
+.login-form {
+    padding: 20px;
+    background: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    border-radius: 20px;
+    position: relative;
+}
+
+.login-form-header {
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.input-field, .login-form-submit, .login-form-about {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 20px;
+    font-family: Akzidenz, sistem-ui, sans-serif;
+    font-size: 16px; 
+}
+
+.login-form-submit, .login-form-about {
+    text-transform: uppercase;
+}
+
+.login-form-about:hover,
+.login-form-submit:hover {
+    cursor: pointer;
+}
+
+.login-form-image {
+    position: absolute;
+    width: 300px;
+    top: 0;
+    right: 0;
+    transform: translate(-50%, -50%);
+}
+
+.input-field::placeholder {
+    font-family: Akzidenz, sistem-ui, sans-serif;
+    font-size: 16px;
+}
