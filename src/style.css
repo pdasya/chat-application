@@ -78,7 +78,7 @@ h2 {
 }
 
 .login-form-about:hover,
-.login-form-submit:hover .login-form-submit:active,
+.login-form-submit:not(:disabled):hover,
 .about-page-button:hover {
     cursor: pointer;
     background-image: url('https://i.pinimg.com/originals/80/ec/a7/80eca70a4d933fd26f1f66444ab95107.jpg');
@@ -141,4 +141,10 @@ h2 {
     font-size: 16px; 
     font-weight: 700;
     margin-top: 20px;
+}
+
+.error-message {
+    color: red;
+    width: 300px;
+    font-weight: 500;
 }
