@@ -1,4 +1,5 @@
 import Tag from '../core/templates/component';
+import { PageIds } from '../core/types/enums';
 
 export default class AuthPage {
     private form: Tag;
@@ -44,6 +45,11 @@ export default class AuthPage {
     private addAboutButton(text: string): void {
         const button = new Tag('button', { class: 'login-form-about' });
         button.addText(text);
+        button.element.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            window.location.hash = PageIds.About;
+        });
         this.form.addChild(button.render());
     }
 

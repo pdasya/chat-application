@@ -25,7 +25,7 @@ body, html {
     align-items: center;
     background: #f0f0f0;
     font-family: Akzidenz, sistem-ui, sans-serif;
-    background-image: url('../src/assets/images/background-image.jpg');
+    background-image: url('../src/assets/images/background-image-auth.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -78,11 +78,13 @@ h2 {
 }
 
 .login-form-about:hover,
-.login-form-submit:hover .login-form-submit:active {
+.login-form-submit:hover .login-form-submit:active,
+.about-page-button:hover {
     cursor: pointer;
     background-image: url('https://i.pinimg.com/originals/80/ec/a7/80eca70a4d933fd26f1f66444ab95107.jpg');
-    background-position: center;
+    background-position: 100%;
     background-size: cover; 
+    color: brown;
 }
 
 .login-form-image {
@@ -96,4 +98,47 @@ h2 {
 .input-field::placeholder {
     font-family: Akzidenz, sistem-ui, sans-serif;
     font-size: 16px;
+}
+
+.about-wrapper {
+    height: 100vh;
+    background-image: url('../src/assets/images/background-image-about.jpg');
+    background-size: cover; 
+    background-position: center;
+    background-repeat: no-repeat;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.about-page-header {
+    padding: 0 20px;
+    font-size: 40px;
+    text-align: center;
+}
+
+.about-page-description {
+    padding: 0 40px;
+    text-align: justify;
+    font-size: 20px;
+}
+
+.about-page-link {
+    padding: 0 40px;
+    text-align: justify;
+    font-size: 20px;
+    text-decoration: none;
+}
+
+.about-page-button {
+    text-align: center;
+    width: 300px;
+    padding: 20px;
+    box-sizing: border-box;
+    border-radius: 20px;
+    font-family: Akzidenz, sistem-ui, sans-serif;
+    font-size: 16px; 
+    font-weight: 700;
+    margin-top: 20px;
 }

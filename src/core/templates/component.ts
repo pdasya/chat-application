@@ -1,5 +1,5 @@
 export default class Tag {
-    private element: HTMLElement;
+    element: HTMLElement;
 
     constructor(tagName: string, attributes: { [key: string]: string } = {}) {
         this.element = document.createElement(tagName);
