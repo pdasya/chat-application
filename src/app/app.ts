@@ -8,9 +8,12 @@ export default class App {
     private static url: string | null = PageIds.Default;
 
     private static auth = new AuthPage();
-    private static main = new MainPage();
 
     static renderNewPage(idPage: string): void {
+        if (!App.isPageAccessible(idPage)) {
+            window.location.hash = PageIds.Auth;
+            return;
+        }
         if (App.url) App.url = null;
         let content;
 
@@ -38,9 +41,16 @@ export default class App {
         App.body.innerHTML = '';
         App.body.appendChild(content);
     }
+    
+    static isAuthentificated(): boolean {
+        return sessionStorage.getItem('isAuthentificated') === 'true';
+    }
 
-    static handleLoginSuccess(): void {
-        window.location.hash = PageIds.Main;
+    static isPageAccessible(idPage: string): boolean {
+        if (idPage === PageIds.Main && !App.isAuthentificated()) {
+            return false;
+        }
+        return true;
     }
 
     static enableRouteChange(): void {
@@ -60,10 +70,11 @@ export default class App {
     static runApp(): void {
         App.generatePage();
         App.enableRouteChange();
-        if (!window.location.hash) {
-            window.location.hash = PageIds.Auth;
+        const initialPage = window.location.hash.slice(1) || PageIds.Auth;
+        if (App.isPageAccessible(initialPage)) {
+            App.renderNewPage(initialPage);
         } else {
-            App.renderNewPage(window.location.hash.slice(1));
+            window.location.hash = PageIds.Auth;
         }
     }
 }

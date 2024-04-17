@@ -113,6 +113,7 @@ export default class AuthPage {
         this.webSocketClient.login(username, password);
         this.webSocketClient.onLoginSuccess = () => {
             window.location.hash = PageIds.Main;
+            sessionStorage.setItem('isAuthentificated', 'true');
         };
         this.webSocketClient.onLoginError = (errorMessage: string) => {
             this.displayError(errorMessage);
