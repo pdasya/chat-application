@@ -1,15 +1,18 @@
 import FormValidator from '../core/components/formValidator';
 import Tag from '../core/templates/component';
 import { PageIds } from '../core/types/enums';
+import WebSocketClient from '../core/server/server';
 
 export default class AuthPage {
     private form: Tag;
     private validator: FormValidator;
+    private webSocketClient: WebSocketClient;
 
     constructor() {
         this.form = new Tag('form', { class: 'login-form' });
         const formElement = this.form.element as HTMLFormElement;
         this.validator = new FormValidator(formElement);
+        this.webSocketClient = new WebSocketClient('ws://localhost:4000');
 
         this.form.element.addEventListener('keydown', (event: KeyboardEvent) => {
             if (event.key === 'Enter') {
@@ -17,6 +20,7 @@ export default class AuthPage {
                 this.validator.clearErrors();
                 if (this.validator.validateInputs()) {
                     this.submitForm();
+                    this.initialFormAfterSubmit();
                 }
             }
         });
@@ -60,6 +64,7 @@ export default class AuthPage {
             this.validator.clearErrors();
             if (this.validator.validateInputs()) {
                 this.submitForm();
+                this.initialFormAfterSubmit();
             }
         });
         this.form.addChild(button.render());
@@ -81,7 +86,7 @@ export default class AuthPage {
         this.form.addChild(cornerImage.render());
     }
 
-    private submitForm(): void {
+    private initialFormAfterSubmit(): void {
         // alert('form submitted');
         const inputs = document.querySelectorAll('.input-field');
         inputs.forEach((element) => {
@@ -98,6 +103,26 @@ export default class AuthPage {
         const submitButton = document.querySelector('.login-form-submit') as HTMLButtonElement;
 
         submitButton.disabled = !username || !password;
+    }
+
+    private async submitForm(): Promise<void> {
+        console.log('Submited');
+        const username = (document.getElementById('username') as HTMLInputElement).value;
+        const password = (document.getElementById('password') as HTMLInputElement).value;
+
+        this.webSocketClient.login(username, password);
+        this.webSocketClient.onLoginSuccess = () => {
+            window.location.hash = PageIds.Main;
+        };
+        this.webSocketClient.onLoginError = (errorMessage: string) => {
+            this.displayError(errorMessage);
+        };
+    }
+
+    public displayError(message: string): void {
+        const errorDiv = new Tag('div', { class: 'error-message' });
+        errorDiv.addText(message);
+        this.form.addChild(errorDiv.render());
     }
 
     render(): HTMLElement {

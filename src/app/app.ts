@@ -1,5 +1,6 @@
 import AuthPage from '../pages/authPage';
 import AboutPage from '../pages/aboutPage';
+import MainPage from '../pages/mainPage';
 import { PageIds } from '../core/types/enums';
 
 export default class App {
@@ -7,6 +8,7 @@ export default class App {
     private static url: string | null = PageIds.Default;
 
     private static auth = new AuthPage();
+    private static main = new MainPage();
 
     static renderNewPage(idPage: string): void {
         if (App.url) App.url = null;
@@ -16,6 +18,11 @@ export default class App {
             case PageIds.Auth: {
                 const authPage = new AuthPage();
                 content = authPage.render();
+                break;
+            }
+            case PageIds.Main: {
+                const mainPage = new MainPage();
+                content = mainPage.render();
                 break;
             }
             case PageIds.About: {
@@ -30,6 +37,10 @@ export default class App {
         App.url = idPage;
         App.body.innerHTML = '';
         App.body.appendChild(content);
+    }
+
+    static handleLoginSuccess(): void {
+        window.location.hash = PageIds.Main;
     }
 
     static enableRouteChange(): void {
