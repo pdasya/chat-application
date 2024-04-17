@@ -28,6 +28,27 @@ interface ErrorResponse {
     };
 }
 
+interface LogoutRequest {
+    id: string;
+    type: string;
+    payload: {
+        user: {
+            login: string;
+        };
+    };
+}
+
+interface LogoutResponse {
+    id: string;
+    type: string;
+    payload: {
+        user: {
+            login: string;
+            isLogined: boolean;
+        };
+    };
+}
+
 export default class WebSocketClient {
     private static instance: WebSocketClient;
     private ws: WebSocket;
@@ -76,10 +97,13 @@ export default class WebSocketClient {
     private onMessage(event: MessageEvent): void {
         console.log('Received response:', event.data);
         try {
-            const response: LoginResponse | ErrorResponse = JSON.parse(event.data);
+            const response: LoginResponse | LogoutResponse | ErrorResponse = JSON.parse(event.data);
             switch (response.type) {
                 case 'USER_LOGIN':
                     this.handleLoginResponse(response as LoginResponse);
+                    break;
+                case 'USER_LOGOUT':
+                    this.handleLogoutResponse(response as LogoutResponse);
                     break;
                 case 'ERROR':
                     this.handleError(response as ErrorResponse);
@@ -108,6 +132,12 @@ export default class WebSocketClient {
         }
     }
 
+    private handleLogoutResponse(response: LogoutResponse): void {
+        console.log(`Logout successful for user ${response.payload.user.login}`);
+        this.currentUserLogin = null; // Clear the current user login
+        // Optionally: Notify the application to redirect to the login page or clean up the user interface
+    }
+
     public getLoggedUserName(): string | null {
         console.log('Current logged user name:', this.currentUserLogin);
         return this.currentUserLogin;
@@ -130,5 +160,22 @@ export default class WebSocketClient {
 
     private generateUniqueId(): string {
         return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    }
+
+    public logout(): void {
+        if (!this.currentUserLogin) {
+            console.error('No user is logged in.');
+            return;
+        }
+        const request: LogoutRequest = {
+            id: this.generateUniqueId(),
+            type: 'USER_LOGOUT',
+            payload: {
+                user: {
+                    login: this.currentUserLogin,
+                },
+            },
+        };
+        this.ws.send(JSON.stringify(request));
     }
 }

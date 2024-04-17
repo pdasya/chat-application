@@ -1,5 +1,6 @@
 import Tag from '../templates/component';
 import WebSocketClient from '../server/server';
+import { PageIds } from '../types/enums';
 
 export default class Header {
     private header: Tag;
@@ -33,6 +34,11 @@ export default class Header {
     addLogoutButton(text: string): void {
         const logoutButton = new Tag('button', { class: 'header-logout-button' });
         logoutButton.addText(text);
+        logoutButton.element.addEventListener('click', () => {
+            this.webSocketClient.logout();
+            window.location.hash = PageIds.Auth;
+            sessionStorage.removeItem('isAuthentificated');
+        });
         this.header.addChild(logoutButton.render());
     }
 

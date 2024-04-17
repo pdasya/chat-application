@@ -13,7 +13,7 @@ export default class AuthPage {
         const formElement = this.form.element as HTMLFormElement;
         this.validator = new FormValidator(formElement);
         this.webSocketClient = WebSocketClient.getInstance('ws://localhost:4000');
-        
+
         this.form.element.addEventListener('keydown', (event: KeyboardEvent) => {
             if (event.key === 'Enter') {
                 event.preventDefault();
