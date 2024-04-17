@@ -41,7 +41,7 @@ export default class App {
         App.body.innerHTML = '';
         App.body.appendChild(content);
     }
-    
+
     static isAuthentificated(): boolean {
         return sessionStorage.getItem('isAuthentificated') === 'true';
     }

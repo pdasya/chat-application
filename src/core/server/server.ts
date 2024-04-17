@@ -29,13 +29,23 @@ interface ErrorResponse {
 }
 
 export default class WebSocketClient {
+    private static instance: WebSocketClient;
     private ws: WebSocket;
     public onLoginSuccess?: (userLogin: string) => void;
     public onLoginError?: (errorMessage: string) => void;
+    private currentUserLogin: string | null;
 
     constructor(url: string) {
         this.ws = new WebSocket(url);
         this.attachEventListeners();
+        this.currentUserLogin = 'def1';
+    }
+
+    public static getInstance(url: string): WebSocketClient {
+        if (!WebSocketClient.instance) {
+            WebSocketClient.instance = new WebSocketClient(url);
+        }
+        return WebSocketClient.instance;
     }
 
     private attachEventListeners(): void {
@@ -85,15 +95,22 @@ export default class WebSocketClient {
     private handleLoginResponse(response: LoginResponse): void {
         if (response.payload.user.isLogined) {
             console.log(`Login successful for user ${response.payload.user.login}`);
-            if (this.onLoginSuccess) {
-                this.onLoginSuccess(response.payload.user.login);
+            this.currentUserLogin = response.payload.user.login;
+            if (this.onLoginSuccess && this.currentUserLogin !== null) {
+                this.onLoginSuccess(this.currentUserLogin);
             }
         } else {
             console.log('Login failed.');
+            this.currentUserLogin = null;
             if (this.onLoginError) {
                 this.onLoginError('Login failed. Please check your credentials and try again.');
             }
         }
+    }
+
+    public getLoggedUserName(): string | null {
+        console.log('Current logged user name:', this.currentUserLogin);
+        return this.currentUserLogin;
     }
 
     private handleError(response: ErrorResponse): void {

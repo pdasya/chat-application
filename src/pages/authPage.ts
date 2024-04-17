@@ -12,8 +12,8 @@ export default class AuthPage {
         this.form = new Tag('form', { class: 'login-form' });
         const formElement = this.form.element as HTMLFormElement;
         this.validator = new FormValidator(formElement);
-        this.webSocketClient = new WebSocketClient('ws://localhost:4000');
-
+        this.webSocketClient = WebSocketClient.getInstance('ws://localhost:4000');
+        
         this.form.element.addEventListener('keydown', (event: KeyboardEvent) => {
             if (event.key === 'Enter') {
                 event.preventDefault();
@@ -87,7 +87,6 @@ export default class AuthPage {
     }
 
     private initialFormAfterSubmit(): void {
-        // alert('form submitted');
         const inputs = document.querySelectorAll('.input-field');
         inputs.forEach((element) => {
             const field = element as HTMLInputElement;
