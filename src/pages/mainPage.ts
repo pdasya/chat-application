@@ -16,7 +16,7 @@ export default class MainPage {
         this.page = new Tag('div', { class: 'main-wrapper' });
         this.header = new Header(this.webSocketClient);
         this.footer = new Footer();
-        this.main = new Main();
+        this.main = new Main(this.webSocketClient);
         this.page.addChild(this.header.render());
         this.page.addChild(this.main.render());
         this.page.addChild(this.footer.render());

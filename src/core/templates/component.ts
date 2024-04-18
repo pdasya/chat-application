@@ -21,6 +21,12 @@ export default class Tag {
         this.element.appendChild(textNode);
     }
 
+    clear(): void {
+        while (this.element.firstChild) {
+            this.element.removeChild(this.element.firstChild);
+        }
+    }
+
     render(): HTMLElement {
         return this.element;
     }

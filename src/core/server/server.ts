@@ -88,6 +88,7 @@ export default class WebSocketClient {
     public onLoginSuccess?: (userLogin: string) => void;
     public onLoginError?: (errorMessage: string) => void;
     private currentUserLogin: string | null;
+    public onActiveUsers?: (users: Array<{ login: string; isLogined: boolean }>) => void;
 
     constructor(url: string) {
         this.ws = new WebSocket(url);
@@ -242,7 +243,10 @@ export default class WebSocketClient {
         console.log('Request sent for all authenticated users:', request);
     }
 
-    private handleActiveUsersResponse(response: ActiveUsersResponse): void {
+    public handleActiveUsersResponse(response: ActiveUsersResponse): void {
         console.log('Active users received:', response.payload.users);
+        if (this.onActiveUsers) {
+            this.onActiveUsers(response.payload.users);
+        }
     }
 }
