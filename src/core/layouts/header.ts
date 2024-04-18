@@ -18,7 +18,7 @@ export default class Header {
         const name = this.webSocketClient.getLoggedUserName();
         if (name) {
             const userNameTag = new Tag('p', { class: 'header-user-name' });
-            userNameTag.addText(name);
+            userNameTag.addText(`Current user: ${name}`);
             this.header.addChild(userNameTag.render());
         } else {
             console.log('No user found');

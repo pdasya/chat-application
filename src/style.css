@@ -24,9 +24,9 @@ body, html {
     justify-content: center;
     align-items: center;
     background: #f0f0f0;
-    font-family: Akzidenz, sistem-ui, sans-serif;
+    font-family: Akzidenz, system-ui, sans-serif;
     background-image: url('../src/assets/images/background-image-auth.jpg');
-    background-repeat: no-repeat;
+    background-repeat: repeat;
     background-size: cover;
     background-position: center;
 }
@@ -58,33 +58,75 @@ h2 {
     padding: 10px;
     box-sizing: border-box;
     border-radius: 20px;
-    font-family: Akzidenz, sistem-ui, sans-serif;
+    font-family: Akzidenz, system-ui, sans-serif;
     font-size: 16px; 
     font-weight: 700;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0; 
-    }
-    to {
-        opacity: 1; 
-    }
-}
-
 .login-form-submit, .login-form-about {
     text-transform: uppercase;
-    animation: fadeIn 2s ease-in-out forwards;
+
+    position: relative;
+    overflow: hidden;
+    transition: color 0.5 ease;
 }
 
-.login-form-about:hover,
-.login-form-submit:not(:disabled):hover,
-.about-page-button:hover {
-    cursor: pointer;
+.login-form-submit::before {
+    content: 'LOGIN';
+    display: flex;            
+    justify-content: center;
+    align-items: center; 
+    color: white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background-image: url('https://i.pinimg.com/originals/80/ec/a7/80eca70a4d933fd26f1f66444ab95107.jpg');
-    background-position: 100%;
-    background-size: cover; 
-    color: brown;
+    background-position: center;
+    background-size: cover;
+    opacity: 0;
+    transition: opacity 0.8s ease-in; 
+    z-index: 0;
+    text-shadow: 
+      -1px -1px 0 #000,  
+       1px -1px 0 #000,
+      -1px  1px 0 #000,
+       1px  1px 0 #000; 
+}
+
+.login-form-submit:hover:not(:disabled):before {
+    opacity: 1;
+    cursor: pointer;
+}
+
+.login-form-about::before {
+    content: 'ABOUT';
+    display: flex;            
+    justify-content: center;
+    align-items: center; 
+    color: white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('https://i.pinimg.com/originals/80/ec/a7/80eca70a4d933fd26f1f66444ab95107.jpg');
+    background-position: center;
+    background-size: cover;
+    opacity: 0;
+    transition: opacity 0.8s ease-in; 
+    z-index: 0;
+    text-shadow: 
+      -1px -1px 0 #000,  
+       1px -1px 0 #000,
+      -1px  1px 0 #000,
+       1px  1px 0 #000; 
+}
+
+.login-form-about:hover::before {
+    opacity: 1;
+    cursor: pointer;
 }
 
 .login-form-image {
@@ -96,7 +138,7 @@ h2 {
 }
 
 .input-field::placeholder {
-    font-family: Akzidenz, sistem-ui, sans-serif;
+    font-family: Akzidenz, system-ui, sans-serif;
     font-size: 16px;
 }
 
@@ -129,6 +171,12 @@ h2 {
     text-align: justify;
     font-size: 20px;
     text-decoration: none;
+
+    transition: color 0.8s ease-in-out;
+}
+
+.about-page-link:hover {
+    color: white;
 }
 
 .about-page-button {
@@ -137,14 +185,140 @@ h2 {
     padding: 20px;
     box-sizing: border-box;
     border-radius: 20px;
-    font-family: Akzidenz, sistem-ui, sans-serif;
+    font-family: Akzidenz, system-ui, sans-serif;
     font-size: 16px; 
     font-weight: 700;
     margin-top: 20px;
+
+    position: relative;
+    overflow: hidden;
+    transition: color 0.5 ease;
+}
+
+.about-page-button::before {
+    content: 'Back to auth page';
+    display: flex;            
+    justify-content: center;
+    align-items: center; 
+    color: white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('https://i.pinimg.com/originals/80/ec/a7/80eca70a4d933fd26f1f66444ab95107.jpg');
+    background-position: center;
+    background-size: cover;
+    opacity: 0;
+    transition: opacity 0.8s ease-in; 
+    z-index: 0;
+    text-shadow: 
+      -1px -1px 0 #000,  
+       1px -1px 0 #000,
+      -1px  1px 0 #000,
+       1px  1px 0 #000; 
+}
+
+.about-page-button:hover::before {
+    opacity: 1;
+    cursor: pointer;
 }
 
 .error-message {
     color: red;
     width: 300px;
     font-weight: 500;
+}
+
+.main-wrapper {
+    height: 100%;
+}
+
+.header-app,
+.footer-app {
+    width: 80vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 20px 40px;
+
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.header-logout-button {
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 20px;
+    font-family: Akzidenz, system-ui, sans-serif;
+    font-size: 20px; 
+    font-weight: 700;
+    text-transform: uppercase;
+
+    position: relative;
+    overflow: hidden;
+    transition: color 0.5 ease;
+}
+
+.header-logout-button::before {
+    content: 'LOGOUT';
+    display: flex;            
+    justify-content: center;
+    align-items: center; 
+    color: white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('https://i.pinimg.com/originals/80/ec/a7/80eca70a4d933fd26f1f66444ab95107.jpg');
+    background-position: center;
+    background-size: cover;
+    opacity: 0;
+    transition: opacity 0.8s ease-in; 
+    z-index: 0;
+    text-shadow: 
+      -1px -1px 0 #000,  
+       1px -1px 0 #000,
+      -1px  1px 0 #000,
+       1px  1px 0 #000; 
+}
+
+.header-logout-button:hover::before {
+    opacity: 1;
+    cursor: pointer;
+}
+
+.footer-app-link {
+    color: black;
+}
+
+.footer-app-link:hover {
+    color: brown;
+}
+
+.footer-app-logo-img {
+    width: 170px;
+    height: auto;
+    border-radius: 50px;
+}
+
+.main-wrapper {
+    /* background-image: url('../src/assets/images/background-image-main.jpg'); */
+    background-size: cover; 
+    background-position: center;
+    background-repeat: repeat;
+}
+
+.main-app {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    width: 80vw;
+    padding: 20px 40px;
+}
+
+.user-list-wrapper {
+    width: 25vw;
+    border-right: solid 5px black;
 }

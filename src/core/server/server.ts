@@ -49,6 +49,39 @@ interface LogoutResponse {
     };
 }
 
+interface ExternalLoginResponse {
+    id: string | null;
+    type: 'USER_EXTERNAL_LOGIN';
+    payload: {
+        user: {
+            login: string;
+            isLogined: boolean;
+        };
+    };
+}
+
+interface ExternalLogoutResponse {
+    id: string | null;
+    type: 'USER_EXTERNAL_LOGOUT';
+    payload: {
+        user: {
+            login: string;
+            isLogined: boolean;
+        };
+    };
+}
+
+interface ActiveUsersResponse {
+    id: string;
+    type: 'USER_ACTIVE';
+    payload: {
+        users: Array<{
+            login: string;
+            isLogined: boolean;
+        }>;
+    };
+}
+
 export default class WebSocketClient {
     private static instance: WebSocketClient;
     private ws: WebSocket;
@@ -97,13 +130,24 @@ export default class WebSocketClient {
     private onMessage(event: MessageEvent): void {
         console.log('Received response:', event.data);
         try {
-            const response: LoginResponse | LogoutResponse | ErrorResponse = JSON.parse(event.data);
+            const response: LoginResponse | LogoutResponse | ErrorResponse | ActiveUsersResponse = JSON.parse(
+                event.data
+            );
             switch (response.type) {
+                case 'USER_ACTIVE':
+                    this.handleActiveUsersResponse(response as ActiveUsersResponse);
+                    break;
                 case 'USER_LOGIN':
                     this.handleLoginResponse(response as LoginResponse);
                     break;
                 case 'USER_LOGOUT':
                     this.handleLogoutResponse(response as LogoutResponse);
+                    break;
+                case 'USER_EXTERNAL_LOGIN':
+                    this.handleExternalLogin(response as ExternalLoginResponse);
+                    break;
+                case 'USER_EXTERNAL_LOGOUT':
+                    this.handleExternalLogout(response as ExternalLogoutResponse);
                     break;
                 case 'ERROR':
                     this.handleError(response as ErrorResponse);
@@ -134,8 +178,15 @@ export default class WebSocketClient {
 
     private handleLogoutResponse(response: LogoutResponse): void {
         console.log(`Logout successful for user ${response.payload.user.login}`);
-        this.currentUserLogin = null; // Clear the current user login
-        // Optionally: Notify the application to redirect to the login page or clean up the user interface
+        this.currentUserLogin = null;
+    }
+
+    private handleExternalLogin(response: ExternalLoginResponse): void {
+        console.log(`External login: User ${response.payload.user.login} has logged in.`);
+    }
+
+    private handleExternalLogout(response: ExternalLogoutResponse): void {
+        console.log(`External logout: User ${response.payload.user.login} has logged out.`);
     }
 
     public getLoggedUserName(): string | null {
@@ -177,5 +228,19 @@ export default class WebSocketClient {
             },
         };
         this.ws.send(JSON.stringify(request));
+    }
+
+    public getAllAuthenticatedUsers(): void {
+        const request = {
+            id: this.generateUniqueId(),
+            type: 'USER_ACTIVE',
+            payload: null,
+        };
+        this.ws.send(JSON.stringify(request));
+        console.log('Request sent for all authenticated users:', request);
+    }
+
+    private handleActiveUsersResponse(response: ActiveUsersResponse): void {
+        console.log('Active users received:', response.payload.users);
     }
 }
