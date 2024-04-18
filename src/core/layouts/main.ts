@@ -27,6 +27,7 @@ export default class Main {
         this.webSocketClient.onInactiveUsers = (users) => {
             this.updateUserList(users, false);
         };
+        this.webSocketClient.onUserUpdate = this.fetchAndDisplayUsers.bind(this);
     }
 
     addUserList(): void {
@@ -52,22 +53,31 @@ export default class Main {
     }
 
     fetchAndDisplayUsers(): void {
+        this.webSocketClient.onActiveUsers = (users) => {
+            this.updateUserList(users, true);
+        };
         this.webSocketClient.getAllAuthenticatedUsers();
+        this.webSocketClient.onInactiveUsers = (users) => {
+            this.updateUserList(users, false);
+        };
         this.webSocketClient.getUnauthorizedUsers();
     }
 
     updateUserList(users: Array<{ login: string; isLogined: boolean }>, isAuthorized: boolean): void {
         const currentUser = localStorage.getItem('currentUser');
-        // this.userContent.clear();
 
-        const filteredUsers = users.filter((user) => user.login !== currentUser);
+        if (isAuthorized) {
+            this.userContent.clear();
+        }
+        
+         const filteredUsers = users.filter(user => user.login !== currentUser);
 
-        filteredUsers.forEach((user) => {
-            const userItem = new Tag('li', {});
-            const statusText = isAuthorized ? 'Authorized' : 'Unauthorized';
-            userItem.addText(`${user.login} (${statusText})`);
-            this.userContent.addChild(userItem.render());
-        });
+    filteredUsers.forEach((user) => {
+        const userItem = new Tag('li', {});
+        const statusText = isAuthorized ? 'Authorized' : 'Unauthorized';
+        userItem.addText(`${user.login} (${statusText})`);
+        this.userContent.addChild(userItem.render());
+    });
     }
 
     render(): HTMLElement {

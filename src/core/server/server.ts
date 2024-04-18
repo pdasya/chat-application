@@ -34,6 +34,7 @@ interface LogoutRequest {
     payload: {
         user: {
             login: string;
+            password: string;
         };
     };
 }
@@ -105,6 +106,7 @@ export default class WebSocketClient {
     public onLoginSuccess?: (userLogin: string) => void;
     public onLoginError?: (errorMessage: string) => void;
     private currentUserLogin: string | null;
+    private currentUserPassword: string;
     public onActiveUsers?: (users: Array<{ login: string; isLogined: boolean }>) => void;
     public onUserUpdate?: () => void;
     public onInactiveUsers?: (users: Array<{ login: string; isLogined: boolean }>) => void;
@@ -113,6 +115,7 @@ export default class WebSocketClient {
         this.ws = new WebSocket(url);
         this.attachEventListeners();
         this.currentUserLogin = 'def1';
+        this.currentUserPassword = 'def1';
     }
 
     public static getInstance(url: string): WebSocketClient {
@@ -145,6 +148,7 @@ export default class WebSocketClient {
             },
         };
         this.ws.send(JSON.stringify(request));
+        this.currentUserPassword = request.payload.user.password;
     }
 
     private onMessage(event: MessageEvent): void {
@@ -205,7 +209,7 @@ export default class WebSocketClient {
 
     private handleLogoutResponse(response: LogoutResponse): void {
         console.log(`Logout successful for user ${response.payload.user.login}`);
-        this.currentUserLogin = null;
+        // this.currentUserLogin = null;
         localStorage.removeItem('currentUser');
     }
 
@@ -258,6 +262,7 @@ export default class WebSocketClient {
             payload: {
                 user: {
                     login: this.currentUserLogin,
+                    password: this.currentUserPassword,
                 },
             },
         };
