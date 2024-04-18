@@ -9,9 +9,24 @@ export default class Main {
     constructor(webSocketClient: WebSocketClient) {
         this.main = new Tag('div', { class: 'main-app' });
         this.webSocketClient = webSocketClient;
+        this.webSocketClient.onUserUpdate = this.fetchAndDisplayUsers.bind(this);
+        this.initializeUI();
+        this.setupEventListeners();
+        this.fetchAndDisplayUsers();
+    }
+
+    private initializeUI(): void {
         this.addUserList();
         this.addChatWrapper();
-        this.fetchAndDisplayUsers();
+    }
+
+    private setupEventListeners(): void {
+        this.webSocketClient.onActiveUsers = (users) => {
+            this.updateUserList(users, true);
+        };
+        this.webSocketClient.onInactiveUsers = (users) => {
+            this.updateUserList(users, false);
+        };
     }
 
     addUserList(): void {
@@ -37,17 +52,20 @@ export default class Main {
     }
 
     fetchAndDisplayUsers(): void {
-        this.webSocketClient.onActiveUsers = (users) => {
-            this.updateUserList(users);
-        };
         this.webSocketClient.getAllAuthenticatedUsers();
+        this.webSocketClient.getUnauthorizedUsers();
     }
 
-    updateUserList(users: Array<{ login: string; isLogined: boolean }>): void {
+    updateUserList(users: Array<{ login: string; isLogined: boolean }>, isAuthorized: boolean): void {
+        const currentUser = localStorage.getItem('currentUser');
         // this.userContent.clear();
-        users.forEach((user) => {
+
+        const filteredUsers = users.filter((user) => user.login !== currentUser);
+
+        filteredUsers.forEach((user) => {
             const userItem = new Tag('li', {});
-            userItem.addText(user.login);
+            const statusText = isAuthorized ? 'Authorized' : 'Unauthorized';
+            userItem.addText(`${user.login} (${statusText})`);
             this.userContent.addChild(userItem.render());
         });
     }

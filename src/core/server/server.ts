@@ -82,6 +82,23 @@ interface ActiveUsersResponse {
     };
 }
 
+interface InactiveUsersRequest {
+    id: string;
+    type: 'USER_INACTIVE';
+    payload: null;
+}
+
+interface InactiveUsersResponse {
+    id: string;
+    type: 'USER_INACTIVE';
+    payload: {
+        users: Array<{
+            login: string;
+            isLogined: boolean;
+        }>;
+    };
+}
+
 export default class WebSocketClient {
     private static instance: WebSocketClient;
     private ws: WebSocket;
@@ -89,6 +106,8 @@ export default class WebSocketClient {
     public onLoginError?: (errorMessage: string) => void;
     private currentUserLogin: string | null;
     public onActiveUsers?: (users: Array<{ login: string; isLogined: boolean }>) => void;
+    public onUserUpdate?: () => void;
+    public onInactiveUsers?: (users: Array<{ login: string; isLogined: boolean }>) => void;
 
     constructor(url: string) {
         this.ws = new WebSocket(url);
@@ -131,9 +150,12 @@ export default class WebSocketClient {
     private onMessage(event: MessageEvent): void {
         console.log('Received response:', event.data);
         try {
-            const response: LoginResponse | LogoutResponse | ErrorResponse | ActiveUsersResponse = JSON.parse(
-                event.data
-            );
+            const response:
+                | LoginResponse
+                | LogoutResponse
+                | ErrorResponse
+                | ActiveUsersResponse
+                | InactiveUsersResponse = JSON.parse(event.data);
             switch (response.type) {
                 case 'USER_ACTIVE':
                     this.handleActiveUsersResponse(response as ActiveUsersResponse);
@@ -149,6 +171,9 @@ export default class WebSocketClient {
                     break;
                 case 'USER_EXTERNAL_LOGOUT':
                     this.handleExternalLogout(response as ExternalLogoutResponse);
+                    break;
+                case 'USER_INACTIVE':
+                    this.handleInactiveUsersResponse(response as InactiveUsersResponse);
                     break;
                 case 'ERROR':
                     this.handleError(response as ErrorResponse);
@@ -186,10 +211,16 @@ export default class WebSocketClient {
 
     private handleExternalLogin(response: ExternalLoginResponse): void {
         console.log(`External login: User ${response.payload.user.login} has logged in.`);
+        if (this.onUserUpdate) {
+            this.onUserUpdate();
+        }
     }
 
     private handleExternalLogout(response: ExternalLogoutResponse): void {
         console.log(`External logout: User ${response.payload.user.login} has logged out.`);
+        if (this.onUserUpdate) {
+            this.onUserUpdate();
+        }
     }
 
     public getLoggedUserName(): string | null {
@@ -247,6 +278,27 @@ export default class WebSocketClient {
         console.log('Active users received:', response.payload.users);
         if (this.onActiveUsers) {
             this.onActiveUsers(response.payload.users);
+        }
+    }
+
+    public getUnauthorizedUsers(): void {
+        const request: InactiveUsersRequest = {
+            id: this.generateUniqueId(),
+            type: 'USER_INACTIVE',
+            payload: null,
+        };
+        if (this.ws.readyState === WebSocket.OPEN) {
+            this.ws.send(JSON.stringify(request));
+            console.log('Request sent for all unauthorized users:', request);
+        } else {
+            console.log('WebSocket is not open.');
+        }
+    }
+
+    private handleInactiveUsersResponse(response: InactiveUsersResponse): void {
+        console.log('Inactive users received:', response.payload.users);
+        if (this.onInactiveUsers) {
+            this.onInactiveUsers(response.payload.users);
         }
     }
 }
