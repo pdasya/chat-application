@@ -164,6 +164,7 @@ export default class WebSocketClient {
         if (response.payload.user.isLogined) {
             console.log(`Login successful for user ${response.payload.user.login}`);
             this.currentUserLogin = response.payload.user.login;
+            localStorage.setItem('currentUser', this.currentUserLogin);
             if (this.onLoginSuccess && this.currentUserLogin !== null) {
                 this.onLoginSuccess(this.currentUserLogin);
             }
@@ -179,6 +180,7 @@ export default class WebSocketClient {
     private handleLogoutResponse(response: LogoutResponse): void {
         console.log(`Logout successful for user ${response.payload.user.login}`);
         this.currentUserLogin = null;
+        localStorage.removeItem('currentUser');
     }
 
     private handleExternalLogin(response: ExternalLoginResponse): void {
@@ -191,7 +193,7 @@ export default class WebSocketClient {
 
     public getLoggedUserName(): string | null {
         console.log('Current logged user name:', this.currentUserLogin);
-        return this.currentUserLogin;
+        return localStorage.getItem('currentUser');
     }
 
     private handleError(response: ErrorResponse): void {

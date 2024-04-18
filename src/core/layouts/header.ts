@@ -38,6 +38,7 @@ export default class Header {
             this.webSocketClient.logout();
             window.location.hash = PageIds.Auth;
             sessionStorage.removeItem('isAuthentificated');
+            localStorage.removeItem('currentUser');
         });
         this.header.addChild(logoutButton.render());
     }
