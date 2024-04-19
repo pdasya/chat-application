@@ -51,12 +51,16 @@ export default class Main {
 
     addChatWrapper(): void {
         const chatWrapper = new Tag('div', { class: 'chat-wrapper' });
-        const chatHeader = new Tag('h2', { class: 'chat-header' });
+        const chatHeader = new Tag('div', { class: 'chat-header' });
+        const chatUser = new Tag('div', { class: 'chat-header-user' });
+        const chatUserStatus = new Tag('div', { class: 'chat-header-user-status' });
         const chatContent = new Tag('p', { class: 'chat-content' });
         chatHeader.addText('Communication lalala');
         chatContent.addText(
             'The list of authorized users will be presented here.The list of authorized users will be presented here.The list of authorized users will be presented here.The list of authorized users will be presented here'
         );
+        chatHeader.addChild(chatUser.render());
+        chatHeader.addChild(chatUserStatus.render());
         chatWrapper.addChild(chatHeader.render());
         chatWrapper.addChild(chatContent.render());
         this.main.addChild(chatWrapper.render());
@@ -89,6 +93,10 @@ export default class Main {
             const userItem = new Tag('li', { class: `user-list-item ${backgroundColor}` });
             userItem.addText(`${user.login}`);
             this.userContent.addChild(userItem.render());
+
+            userItem.element.addEventListener('click', () => {
+                this.openChatWithUser(user);
+            });
         });
     }
 
@@ -104,6 +112,10 @@ export default class Main {
             const userItem = new Tag('li', { class: `user-list-item ${backgroundColor}` });
             userItem.addText(`${user.login}`);
             this.userContent.addChild(userItem.render());
+
+            userItem.element.addEventListener('click', () => {
+                this.openChatWithUser(user);
+            });
         });
     }
 
@@ -118,6 +130,27 @@ export default class Main {
         }
 
         this.updateFiltetedUserList(filteredUsers);
+    }
+
+    private openChatWithUser(user: { login: string; isLogined: boolean }): void {
+        const chatWindow = document.querySelector('.chat-wrapper');
+        if (chatWindow) {
+            const chatUser = chatWindow.querySelector('.chat-header-user');
+            const chatUserStatus = chatWindow.querySelector('.chat-header-user-status');
+            const chatContent = chatWindow.querySelector('.chat-content');
+
+            if (chatUser && chatUserStatus && chatContent) {
+                chatUser.textContent = user.login;
+                chatUserStatus.textContent = user.isLogined ? 'Online' : 'Offline';
+
+                chatContent.textContent = '';
+                chatContent.textContent = `Chat started with ${user.login}. Say hi!`;
+            } else {
+                console.error('Chat user elements not found');
+            }
+        } else {
+            console.error('Chat window element not found');
+        }
     }
 
     render(): HTMLElement {
