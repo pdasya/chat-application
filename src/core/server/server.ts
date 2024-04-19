@@ -189,12 +189,30 @@ export default class WebSocketClient {
     public onMessageReceived?: (message: ReceivedMessageResponse['payload']['message']) => void;
     public onMessageHistoryReceived?: (messages: Message[]) => void;
     private messages: Message[] = [];
+    public sessionID: string;
 
     constructor(url: string) {
         this.ws = new WebSocket(url);
         this.attachEventListeners();
         this.currentUserLogin = 'def1';
         this.currentUserPassword = 'def1';
+        this.sessionID = `session_${Date.now()}_${Math.random().toString(36).substring(2)}`;
+        this.loadSessionData();
+    }
+
+    private loadSessionData() {
+        const userLogin = localStorage.getItem(`${this.sessionID}_user`);
+        if (userLogin) {
+            this.currentUserLogin = userLogin;
+            this.currentUserPassword = '';
+        } else {
+            this.currentUserLogin = null;
+            this.currentUserPassword = '';
+        }
+    }
+
+    private clearSessionData() {
+        localStorage.removeItem(`${this.sessionID}_user`);
     }
 
     public static getInstance(url: string): WebSocketClient {
@@ -227,7 +245,14 @@ export default class WebSocketClient {
             },
         };
         this.ws.send(JSON.stringify(request));
-        this.currentUserPassword = request.payload.user.password;
+        this.currentUserLogin = login;
+        this.currentUserPassword = password;
+        this.saveSessionData();
+    }
+
+    private saveSessionData() {
+        const userData = this.currentUserLogin as string;
+        localStorage.setItem(`${this.sessionID}_user`, userData);
     }
 
     private onMessage(event: MessageEvent): void {
@@ -289,13 +314,15 @@ export default class WebSocketClient {
         if (response.payload.user.isLogined) {
             console.log(`Login successful for user ${response.payload.user.login}`);
             this.currentUserLogin = response.payload.user.login;
-            localStorage.setItem('currentUser', this.currentUserLogin);
+            this.saveSessionData();
             if (this.onLoginSuccess && this.currentUserLogin !== null) {
                 this.onLoginSuccess(this.currentUserLogin);
             }
         } else {
             console.log('Login failed.');
             this.currentUserLogin = null;
+            this.currentUserPassword = '';
+            this.clearSessionData();
             if (this.onLoginError) {
                 this.onLoginError('Login failed. Please check your credentials and try again.');
             }
@@ -304,8 +331,9 @@ export default class WebSocketClient {
 
     private handleLogoutResponse(response: LogoutResponse): void {
         console.log(`Logout successful for user ${response.payload.user.login}`);
-        // this.currentUserLogin = null;
-        localStorage.removeItem('currentUser');
+        this.currentUserLogin = null;
+        this.currentUserPassword = '';
+        this.clearSessionData();
     }
 
     private handleExternalLogin(response: ExternalLoginResponse): void {
@@ -324,7 +352,7 @@ export default class WebSocketClient {
 
     public getLoggedUserName(): string | null {
         console.log('Current logged user name:', this.currentUserLogin);
-        return localStorage.getItem('currentUser');
+        return localStorage.getItem(`${this.sessionID}_user`);
     }
 
     private handleError(response: ErrorResponse): void {

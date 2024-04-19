@@ -102,7 +102,7 @@ export default class Main {
 
     updateUserList(users: Array<{ login: string; isLogined: boolean }>, isAuthorized?: boolean): void {
         this.users = users;
-        const currentUser = localStorage.getItem('currentUser');
+        const currentUser = localStorage.getItem(`${this.webSocketClient.sessionID}_user`);
 
         if (isAuthorized) {
             this.userContent.clear();
@@ -126,7 +126,7 @@ export default class Main {
     updateFiltetedUserList(users: Array<{ login: string; isLogined: boolean }>, isAuthorized?: boolean): void {
         this.userContent.clear();
 
-        const currentUser = localStorage.getItem('currentUser');
+        const currentUser = localStorage.getItem(`${this.webSocketClient.sessionID}_user`);
 
         const filteredUsers = users.filter((user) => user.login !== currentUser);
 
@@ -143,7 +143,7 @@ export default class Main {
     }
 
     private filterUsers(searchTerm: string): void {
-        const currentUser = localStorage.getItem('currentUser');
+        const currentUser = localStorage.getItem(`${this.webSocketClient.sessionID}_user`);
         let filteredUsers = this.users;
 
         if (searchTerm.trim() !== '') {
@@ -210,17 +210,6 @@ export default class Main {
             });
         }
     }
-
-    // private displayMessage(message: { from: string, text: string, datetime: number, status: { isDelivered: boolean, isReaded: boolean }}) {
-    //     const chatContent = document.querySelector('.chat-content');
-    //     if (chatContent) {
-    //         const messageElement = document.createElement('p');
-    //         const timestamp = new Date(message.datetime);
-    //         const deliveredStatus = message.status.isDelivered ? 'Delivered' : 'Pending';
-    //         messageElement.textContent = `${message.from} [${timestamp.toLocaleTimeString()}]: ${message.text} (${deliveredStatus})`;
-    //         chatContent.appendChild(messageElement);
-    //     }
-    // }
 
     private displayNotification(message: string): void {
         const chatWrapper = document.querySelector('.chat-wrapper');
