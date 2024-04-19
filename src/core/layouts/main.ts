@@ -19,6 +19,7 @@ export default class Main {
         this.initializeUI();
         this.setupEventListeners();
         this.fetchAndDisplayUsers();
+        this.webSocketClient.onMessageHistoryReceived = this.displayMessages.bind(this);
     }
 
     private initializeUI(): void {
@@ -149,16 +150,16 @@ export default class Main {
     private openChatWithUser(user: { login: string; isLogined: boolean }): void {
         const chatWindow = document.querySelector('.chat-wrapper');
         if (chatWindow) {
-            const chatUser = chatWindow.querySelector('.chat-header-user');
-            const chatUserStatus = chatWindow.querySelector('.chat-header-user-status');
-            const chatContent = chatWindow.querySelector('.chat-content');
+            const chatUser = chatWindow.querySelector('.chat-header-user') as HTMLElement;
+            const chatUserStatus = chatWindow.querySelector('.chat-header-user-status') as HTMLElement;
+            const chatContent = chatWindow.querySelector('.chat-content') as HTMLElement;
 
             if (chatUser && chatUserStatus && chatContent) {
                 chatUser.textContent = user.login;
                 chatUserStatus.textContent = user.isLogined ? 'Online' : 'Offline';
+                chatContent.innerHTML = '';
 
-                chatContent.textContent = '';
-                chatContent.textContent = `Chat started with ${user.login}. Say hi!`;
+                this.webSocketClient.fetchMessageHistory(user.login);
             } else {
                 console.error('Chat user elements not found');
             }
@@ -185,6 +186,18 @@ export default class Main {
         const chatContent = document.querySelector('.chat-content');
         if (chatContent) {
             chatContent.textContent += `\nYou: ${messageText}`;
+        }
+    }
+
+    private displayMessages(messages: Array<{ from: string; text: string; datetime: number }>) {
+        const chatContent = document.querySelector('.chat-content');
+        if (chatContent) {
+            chatContent.innerHTML = '';
+            messages.forEach((message) => {
+                const messageElement = document.createElement('p');
+                messageElement.textContent = `${message.from} [${new Date(message.datetime).toLocaleString()}]: ${message.text}`;
+                chatContent.appendChild(messageElement);
+            });
         }
     }
 

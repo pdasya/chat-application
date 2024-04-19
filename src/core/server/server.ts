@@ -100,7 +100,26 @@ interface InactiveUsersResponse {
     };
 }
 
-interface SendMessageResponce {
+// interface SendMessageResponce {
+//     id: string;
+//     type: 'MSG_SEND';
+//     payload: {
+//         message: {
+//             id: string;
+//             from: string;
+//             to: string;
+//             text: string;
+//             datetime: number;
+//             status: {
+//                 isDelivered: boolean;
+//                 isReaded: boolean;
+//                 isEdited: boolean;
+//             };
+//         };
+//     };
+// }
+
+interface ReceivedMessageResponse {
     id: string;
     type: 'MSG_SEND';
     payload: {
@@ -119,6 +138,27 @@ interface SendMessageResponce {
     };
 }
 
+interface Message {
+    id: string;
+    from: string;
+    to: string;
+    text: string;
+    datetime: number;
+    status: {
+        isDelivered: boolean;
+        isReaded: boolean;
+        isEdited: boolean;
+    };
+}
+
+interface ReceivedMessageHistoryResponse {
+    id: string;
+    type: 'MSG_FROM_USER';
+    payload: {
+        messages: Message[];
+    };
+}
+
 export default class WebSocketClient {
     private static instance: WebSocketClient;
     private ws: WebSocket;
@@ -129,6 +169,8 @@ export default class WebSocketClient {
     public onActiveUsers?: (users: Array<{ login: string; isLogined: boolean }>) => void;
     public onUserUpdate?: () => void;
     public onInactiveUsers?: (users: Array<{ login: string; isLogined: boolean }>) => void;
+    public onMessageReceived?: (message: ReceivedMessageResponse['payload']['message']) => void;
+    public onMessageHistoryReceived?: (messages: Message[]) => void;
 
     constructor(url: string) {
         this.ws = new WebSocket(url);
@@ -179,7 +221,8 @@ export default class WebSocketClient {
                 | ErrorResponse
                 | ActiveUsersResponse
                 | InactiveUsersResponse
-                | SendMessageResponce = JSON.parse(event.data);
+                | ReceivedMessageResponse
+                | ReceivedMessageHistoryResponse = JSON.parse(event.data);
             switch (response.type) {
                 case 'USER_ACTIVE':
                     this.handleActiveUsersResponse(response as ActiveUsersResponse);
@@ -200,7 +243,10 @@ export default class WebSocketClient {
                     this.handleInactiveUsersResponse(response as InactiveUsersResponse);
                     break;
                 case 'MSG_SEND':
-                    this.handleMessageSendResponse(response as SendMessageResponce);
+                    this.handleReceivedMessage(response as ReceivedMessageResponse);
+                    break;
+                case 'MSG_FROM_USER':
+                    this.handleMessageHistoryResponse(response as ReceivedMessageHistoryResponse);
                     break;
                 case 'ERROR':
                     this.handleError(response as ErrorResponse);
@@ -349,11 +395,49 @@ export default class WebSocketClient {
         }
     }
 
-    private handleMessageSendResponse(response: SendMessageResponce): void {
+    private handleMessageSendResponse(response: ReceivedMessageResponse): void {
         if (response.payload.message.status.isDelivered) {
             console.log('Message delivered to:', response.payload.message.to);
         } else {
             console.log('Message pending delivery to:', response.payload.message.to);
+        }
+    }
+
+    private handleReceivedMessage(response: ReceivedMessageResponse): void {
+        console.log('Message received from', response.payload.message.from, ':', response.payload.message.text);
+
+        if (!response.payload.message.status.isDelivered) {
+            response.payload.message.status.isDelivered = true;
+        }
+
+        if (this.onMessageReceived) {
+            this.onMessageReceived(response.payload.message);
+        }
+    }
+
+    public fetchMessageHistory(userLogin: string): void {
+        const request = {
+            id: this.generateUniqueId(),
+            type: 'MSG_FROM_USER',
+            payload: {
+                user: {
+                    login: userLogin,
+                },
+            },
+        };
+
+        if (this.ws.readyState === WebSocket.OPEN) {
+            this.ws.send(JSON.stringify(request));
+            console.log('Fetching message history for:', userLogin);
+        } else {
+            console.error('WebSocket is not open. Cannot fetch message history.');
+        }
+    }
+
+    private handleMessageHistoryResponse(response: ReceivedMessageHistoryResponse): void {
+        console.log('Received message history:', response.payload.messages);
+        if (this.onMessageHistoryReceived) {
+            this.onMessageHistoryReceived(response.payload.messages);
         }
     }
 }
