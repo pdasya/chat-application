@@ -79,6 +79,14 @@ export default class Main {
             this.sendMessage(chatInput.element.value);
             chatInput.element.value = '';
         });
+
+        chatInput.element.addEventListener('keypress', (event: KeyboardEvent) => {
+            if (event.key === 'Enter') {
+                this.sendMessage(chatInput.element.value);
+                chatInput.element.value = '';
+                event.preventDefault();
+            }
+        });
     }
 
     fetchAndDisplayUsers(): void {
