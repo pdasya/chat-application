@@ -35,6 +35,10 @@ h2 {
     margin: 0;
 }
 
+ul {
+    padding: 0;
+}
+
 .login-form {
     padding: 20px;
     background: white;
@@ -301,6 +305,7 @@ h2 {
     width: 170px;
     height: auto;
     border-radius: 50px;
+    border: 2px black solid;
 }
 
 .main-wrapper {
@@ -322,3 +327,64 @@ h2 {
     width: 25vw;
     border-right: solid 5px black;
 }
+
+.user-list-content {
+    list-style: none;
+    height: 300px;
+    overflow: auto;
+}
+
+.user-list-content .user-list-item {
+    position: relative;
+    padding-left: 30px;
+}
+
+.user-list-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0; 
+    width: 20px; 
+    height: 20px;
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/d/dc/Knockoff_Little_Totoro.svg');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.user-list-item-red::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0; 
+    width: 20px; 
+    height: 20px;
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/d/dc/Knockoff_Little_Totoro.svg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-color: red;
+}
+
+.user-list-item-green::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0; 
+    width: 20px; 
+    height: 20px;
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/d/dc/Knockoff_Little_Totoro.svg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-color: lawngreen;
+}
+
+.user-search-input {
+    padding: 5px;
+    background: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    position: relative;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+

@@ -1,8 +1,8 @@
-export default class Tag {
-    element: HTMLElement;
+export default class Tag<T extends HTMLElement = HTMLElement> {
+    element: T;
 
     constructor(tagName: string, attributes: { [key: string]: string } = {}) {
-        this.element = document.createElement(tagName);
+        this.element = document.createElement(tagName) as T;
         this.setAttributes(attributes);
     }
 
