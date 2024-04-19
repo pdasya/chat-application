@@ -55,15 +55,29 @@ export default class Main {
         const chatUser = new Tag('div', { class: 'chat-header-user' });
         const chatUserStatus = new Tag('div', { class: 'chat-header-user-status' });
         const chatContent = new Tag('p', { class: 'chat-content' });
-        chatHeader.addText('Communication lalala');
-        chatContent.addText(
-            'The list of authorized users will be presented here.The list of authorized users will be presented here.The list of authorized users will be presented here.The list of authorized users will be presented here'
-        );
+        const chatInput = new Tag<HTMLInputElement>('input', {
+            type: 'text',
+            placeholder: 'Type your message here...',
+            class: 'chat-input',
+        });
+        const chatSendButton = new Tag('button', { class: 'chat-send-button' });
+        chatSendButton.addText('Send');
+
+        chatHeader.addText('Communication area');
+        chatContent.addText('Messages will appear here.');
+
         chatHeader.addChild(chatUser.render());
         chatHeader.addChild(chatUserStatus.render());
         chatWrapper.addChild(chatHeader.render());
         chatWrapper.addChild(chatContent.render());
+        chatWrapper.addChild(chatInput.render());
+        chatWrapper.addChild(chatSendButton.render());
         this.main.addChild(chatWrapper.render());
+
+        chatSendButton.element.addEventListener('click', () => {
+            this.sendMessage(chatInput.element.value);
+            chatInput.element.value = '';
+        });
     }
 
     fetchAndDisplayUsers(): void {
@@ -150,6 +164,27 @@ export default class Main {
             }
         } else {
             console.error('Chat window element not found');
+        }
+    }
+
+    private sendMessage(messageText: string): void {
+        if (!messageText.trim()) {
+            console.log('Cannot send an empty message.');
+            return;
+        }
+
+        const chatUserElement = document.querySelector('.chat-header-user');
+        const chatUser = chatUserElement ? chatUserElement.textContent : '';
+
+        if (!chatUser) {
+            console.error('No user selected for chat.');
+            return;
+        }
+        this.webSocketClient.sendMessage(chatUser, messageText);
+
+        const chatContent = document.querySelector('.chat-content');
+        if (chatContent) {
+            chatContent.textContent += `\nYou: ${messageText}`;
         }
     }
 

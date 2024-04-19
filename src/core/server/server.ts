@@ -100,6 +100,25 @@ interface InactiveUsersResponse {
     };
 }
 
+interface SendMessageResponce {
+    id: string;
+    type: 'MSG_SEND';
+    payload: {
+        message: {
+            id: string;
+            from: string;
+            to: string;
+            text: string;
+            datetime: number;
+            status: {
+                isDelivered: boolean;
+                isReaded: boolean;
+                isEdited: boolean;
+            };
+        };
+    };
+}
+
 export default class WebSocketClient {
     private static instance: WebSocketClient;
     private ws: WebSocket;
@@ -159,7 +178,8 @@ export default class WebSocketClient {
                 | LogoutResponse
                 | ErrorResponse
                 | ActiveUsersResponse
-                | InactiveUsersResponse = JSON.parse(event.data);
+                | InactiveUsersResponse
+                | SendMessageResponce = JSON.parse(event.data);
             switch (response.type) {
                 case 'USER_ACTIVE':
                     this.handleActiveUsersResponse(response as ActiveUsersResponse);
@@ -178,6 +198,9 @@ export default class WebSocketClient {
                     break;
                 case 'USER_INACTIVE':
                     this.handleInactiveUsersResponse(response as InactiveUsersResponse);
+                    break;
+                case 'MSG_SEND':
+                    this.handleMessageSendResponse(response as SendMessageResponce);
                     break;
                 case 'ERROR':
                     this.handleError(response as ErrorResponse);
@@ -304,6 +327,33 @@ export default class WebSocketClient {
         console.log('Inactive users received:', response.payload.users);
         if (this.onInactiveUsers) {
             this.onInactiveUsers(response.payload.users);
+        }
+    }
+
+    public sendMessage(to: string, text: string): void {
+        const messageRequest = {
+            id: this.generateUniqueId(),
+            type: 'MSG_SEND',
+            payload: {
+                message: {
+                    to,
+                    text,
+                },
+            },
+        };
+        if (this.ws.readyState === WebSocket.OPEN) {
+            this.ws.send(JSON.stringify(messageRequest));
+            console.log('Message sent:', messageRequest);
+        } else {
+            console.error('WebSocket is not open. Unable to send message.');
+        }
+    }
+
+    private handleMessageSendResponse(response: SendMessageResponce): void {
+        if (response.payload.message.status.isDelivered) {
+            console.log('Message delivered to:', response.payload.message.to);
+        } else {
+            console.log('Message pending delivery to:', response.payload.message.to);
         }
     }
 }
