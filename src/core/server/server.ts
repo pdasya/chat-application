@@ -100,25 +100,6 @@ interface InactiveUsersResponse {
     };
 }
 
-// interface SendMessageResponce {
-//     id: string;
-//     type: 'MSG_SEND';
-//     payload: {
-//         message: {
-//             id: string;
-//             from: string;
-//             to: string;
-//             text: string;
-//             datetime: number;
-//             status: {
-//                 isDelivered: boolean;
-//                 isReaded: boolean;
-//                 isEdited: boolean;
-//             };
-//         };
-//     };
-// }
-
 interface ReceivedMessageResponse {
     id: string;
     type: 'MSG_SEND';
@@ -138,7 +119,7 @@ interface ReceivedMessageResponse {
     };
 }
 
-interface Message {
+export interface Message {
     id: string;
     from: string;
     to: string;
@@ -159,6 +140,42 @@ interface ReceivedMessageHistoryResponse {
     };
 }
 
+interface MessageDeliveryStatusChange {
+    id: string;
+    type: 'MSG_DELIVER';
+    payload: {
+        message: {
+            id: string;
+            status: {
+                isDelivered: boolean;
+            };
+        };
+    };
+}
+
+// interface MessageReadStatusChangeRequest {
+//     id: string;
+//     type: 'MSG_READ';
+//     payload: {
+//         message: {
+//             id: string;
+//         };
+//     };
+// }
+
+interface MessageReadStatusChangeResponse {
+    id: string;
+    type: 'MSG_READ';
+    payload: {
+        message: {
+            id: string;
+            status: {
+                isReaded: boolean;
+            };
+        };
+    };
+}
+
 export default class WebSocketClient {
     private static instance: WebSocketClient;
     private ws: WebSocket;
@@ -171,6 +188,7 @@ export default class WebSocketClient {
     public onInactiveUsers?: (users: Array<{ login: string; isLogined: boolean }>) => void;
     public onMessageReceived?: (message: ReceivedMessageResponse['payload']['message']) => void;
     public onMessageHistoryReceived?: (messages: Message[]) => void;
+    private messages: Message[] = [];
 
     constructor(url: string) {
         this.ws = new WebSocket(url);
@@ -222,7 +240,9 @@ export default class WebSocketClient {
                 | ActiveUsersResponse
                 | InactiveUsersResponse
                 | ReceivedMessageResponse
-                | ReceivedMessageHistoryResponse = JSON.parse(event.data);
+                | ReceivedMessageHistoryResponse
+                | MessageDeliveryStatusChange
+                | MessageReadStatusChangeResponse = JSON.parse(event.data);
             switch (response.type) {
                 case 'USER_ACTIVE':
                     this.handleActiveUsersResponse(response as ActiveUsersResponse);
@@ -247,6 +267,12 @@ export default class WebSocketClient {
                     break;
                 case 'MSG_FROM_USER':
                     this.handleMessageHistoryResponse(response as ReceivedMessageHistoryResponse);
+                    break;
+                case 'MSG_DELIVER':
+                    this.handleMessageDelivered(response as MessageDeliveryStatusChange);
+                    break;
+                case 'MSG_READ':
+                    this.handleMessageRead(response as MessageReadStatusChangeResponse);
                     break;
                 case 'ERROR':
                     this.handleError(response as ErrorResponse);
@@ -395,14 +421,6 @@ export default class WebSocketClient {
         }
     }
 
-    private handleMessageSendResponse(response: ReceivedMessageResponse): void {
-        if (response.payload.message.status.isDelivered) {
-            console.log('Message delivered to:', response.payload.message.to);
-        } else {
-            console.log('Message pending delivery to:', response.payload.message.to);
-        }
-    }
-
     private handleReceivedMessage(response: ReceivedMessageResponse): void {
         console.log('Message received from', response.payload.message.from, ':', response.payload.message.text);
 
@@ -438,6 +456,32 @@ export default class WebSocketClient {
         console.log('Received message history:', response.payload.messages);
         if (this.onMessageHistoryReceived) {
             this.onMessageHistoryReceived(response.payload.messages);
+        }
+    }
+
+    private handleMessageDelivered(response: MessageDeliveryStatusChange): void {
+        console.log(
+            'Message delivery status updated:',
+            response.payload.message.id,
+            'isDelivered:',
+            response.payload.message.status.isDelivered
+        );
+        const message = this.messages.find((msg) => msg.id === response.payload.message.id);
+        if (message) {
+            message.status.isDelivered = true;
+        }
+    }
+
+    private handleMessageRead(response: MessageReadStatusChangeResponse): void {
+        console.log(
+            'Message read status updated:',
+            response.payload.message.id,
+            'isReaded:',
+            response.payload.message.status.isReaded
+        );
+        const message = this.messages.find((msg) => msg.id === response.payload.message.id);
+        if (message) {
+            message.status.isReaded = true;
         }
     }
 }

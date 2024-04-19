@@ -1,5 +1,5 @@
 import Tag from '../templates/component';
-import WebSocketClient from '../server/server';
+import WebSocketClient, { Message } from '../server/server';
 
 export default class Main {
     private main: Tag;
@@ -178,7 +178,7 @@ export default class Main {
 
     private sendMessage(messageText: string): void {
         if (!messageText.trim()) {
-            console.log('Cannot send an empty message.');
+            this.displayNotification('Impossible to send a message with no content');
             return;
         }
 
@@ -189,23 +189,66 @@ export default class Main {
             console.error('No user selected for chat.');
             return;
         }
+
         this.webSocketClient.sendMessage(chatUser, messageText);
 
-        const chatContent = document.querySelector('.chat-content');
-        if (chatContent) {
-            chatContent.textContent += `\nYou: ${messageText}`;
-        }
+        // Add the message to the UI
+        this.addMessageToUI('You', messageText, new Date(), false, false);
     }
 
-    private displayMessages(messages: Array<{ from: string; text: string; datetime: number }>) {
+    private displayMessages(messages: Message[]) {
         const chatContent = document.querySelector('.chat-content');
         if (chatContent) {
             chatContent.innerHTML = '';
             messages.forEach((message) => {
                 const messageElement = document.createElement('p');
-                messageElement.textContent = `${message.from} [${new Date(message.datetime).toLocaleString()}]: ${message.text}`;
+                // Access the `isDelivered` and `isReaded` from the `status` object.
+                const deliveredStatus = message.status.isDelivered ? 'Delivered' : 'Not Delivered';
+                const readStatus = message.status.isReaded ? 'Read' : 'Unread';
+                messageElement.textContent = `${message.from} [${new Date(message.datetime).toLocaleString()}]: ${message.text} (${deliveredStatus}, ${readStatus})`;
                 chatContent.appendChild(messageElement);
             });
+        }
+    }
+
+    // private displayMessage(message: { from: string, text: string, datetime: number, status: { isDelivered: boolean, isReaded: boolean }}) {
+    //     const chatContent = document.querySelector('.chat-content');
+    //     if (chatContent) {
+    //         const messageElement = document.createElement('p');
+    //         const timestamp = new Date(message.datetime);
+    //         const deliveredStatus = message.status.isDelivered ? 'Delivered' : 'Pending';
+    //         messageElement.textContent = `${message.from} [${timestamp.toLocaleTimeString()}]: ${message.text} (${deliveredStatus})`;
+    //         chatContent.appendChild(messageElement);
+    //     }
+    // }
+
+    private displayNotification(message: string): void {
+        const chatWrapper = document.querySelector('.chat-wrapper');
+        if (chatWrapper) {
+            const notification = new Tag('div', { class: 'chat-notification' });
+            notification.addText(message);
+            chatWrapper.appendChild(notification.render());
+
+            setTimeout(() => {
+                if (notification.element.parentNode) {
+                    notification.element.parentNode.removeChild(notification.element);
+                }
+            }, 3000);
+        }
+    }
+
+    private addMessageToUI(from: string, text: string, datetime: Date, isDelivered: boolean, isReaded: boolean) {
+        const chatContent = document.querySelector('.chat-content');
+        if (chatContent) {
+            const messageElement = document.createElement('p');
+            let statusText;
+            if (isDelivered) {
+                statusText = isReaded ? 'Read' : 'Delivered';
+            } else {
+                statusText = 'Sending...';
+            }
+            messageElement.textContent = `${from} [${datetime.toLocaleTimeString()}]: ${text} (${statusText})`;
+            chatContent.appendChild(messageElement);
         }
     }
 
