@@ -198,8 +198,8 @@ export default class Main {
 
     private displayMessages(messages: Message[]) {
         const chatContent = document.querySelector('.chat-content');
-        const currentUser = localStorage.getItem(`${this.webSocketClient.sessionID}_user`); 
-    
+        const currentUser = localStorage.getItem(`${this.webSocketClient.sessionID}_user`);
+
         if (chatContent) {
             chatContent.innerHTML = '';
             messages.forEach((message) => {
@@ -211,13 +211,12 @@ export default class Main {
                     const readStatus = message.status.isReaded ? 'Read' : 'Unread';
                     statusText += ` (${deliveredStatus}, ${readStatus})`;
                 }
-    
+
                 messageElement.textContent = `${message.from} [${statusText}]`;
                 chatContent.appendChild(messageElement);
             });
         }
     }
-    
 
     private displayNotification(message: string): void {
         const chatWrapper = document.querySelector('.chat-wrapper');
