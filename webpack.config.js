@@ -4,8 +4,9 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyPlugin = require("copy-webpack-plugin");
 const EslintPlugin = require('eslint-webpack-plugin');
 
-module.exports = {
+const baseConfig = {
   entry: path.resolve(__dirname, "src/index.ts"),
+  mode: 'development',
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: 'bundle.js',
@@ -33,10 +34,10 @@ module.exports = {
     },
     extensions: ['.ts', '.js']
   },
-  devServer: {
-    open: true,
-    host: "localhost",
-  },
+  // devServer: {
+  //   open: true,
+  //   host: "localhost",
+  // },
   module: {
     rules: [
       {
