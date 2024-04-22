@@ -67,6 +67,10 @@ ul {
     font-weight: 700;
 }
 
+.input-field:focus {
+    border: solid 5px green;
+}
+
 .login-form-submit, .login-form-about {
     text-transform: uppercase;
 
@@ -250,6 +254,10 @@ ul {
     font-weight: 700;
 }
 
+.header-app-name {
+    position: relative;
+}
+
 .header-logout-button {
     padding: 10px;
     box-sizing: border-box;
@@ -339,16 +347,13 @@ ul {
     padding-left: 30px;
 }
 
-.user-list-item::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0; 
-    width: 20px; 
-    height: 20px;
-    background-image: url('https://upload.wikimedia.org/wikipedia/commons/d/dc/Knockoff_Little_Totoro.svg');
-    background-size: cover;
-    background-repeat: no-repeat;
+.user-list-item {
+    margin-top: 10px;
+}
+
+.user-list-item:hover {
+    cursor: pointer;
+    font-weight: 700;
 }
 
 .user-list-item-red::before {

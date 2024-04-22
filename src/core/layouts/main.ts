@@ -198,18 +198,26 @@ export default class Main {
 
     private displayMessages(messages: Message[]) {
         const chatContent = document.querySelector('.chat-content');
+        const currentUser = localStorage.getItem(`${this.webSocketClient.sessionID}_user`); 
+    
         if (chatContent) {
             chatContent.innerHTML = '';
             messages.forEach((message) => {
                 const messageElement = document.createElement('p');
-                // Access the `isDelivered` and `isReaded` from the `status` object.
-                const deliveredStatus = message.status.isDelivered ? 'Delivered' : 'Not Delivered';
-                const readStatus = message.status.isReaded ? 'Read' : 'Unread';
-                messageElement.textContent = `${message.from} [${new Date(message.datetime).toLocaleString()}]: ${message.text} (${deliveredStatus}, ${readStatus})`;
+                let statusText = `${new Date(message.datetime).toLocaleString()}: ${message.text}`;
+
+                if (message.from === currentUser) {
+                    const deliveredStatus = message.status.isDelivered ? 'Delivered' : 'Not Delivered';
+                    const readStatus = message.status.isReaded ? 'Read' : 'Unread';
+                    statusText += ` (${deliveredStatus}, ${readStatus})`;
+                }
+    
+                messageElement.textContent = `${message.from} [${statusText}]`;
                 chatContent.appendChild(messageElement);
             });
         }
     }
+    
 
     private displayNotification(message: string): void {
         const chatWrapper = document.querySelector('.chat-wrapper');
