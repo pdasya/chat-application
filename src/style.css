@@ -248,6 +248,7 @@ ul {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
     padding: 20px 40px;
 
     font-size: 20px;
@@ -331,6 +332,11 @@ ul {
     padding: 20px 40px;
 }
 
+.user-list-header {
+    font-size: 20px;
+    font-weight: 700;
+}
+
 .user-list-wrapper {
     width: 25vw;
     border-right: solid 5px black;
@@ -388,7 +394,6 @@ ul {
     border: 1px solid #ccc;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 20px;
-    position: relative;
     margin-top: 10px;
     margin-right: 10px;
 }
@@ -404,4 +409,100 @@ ul {
     border-radius: 5px;
     z-index: 100;
 }
+
+.chat-header {
+    font-size: 20px;
+    font-weight: 700;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.chat-wrapper {
+    width: 75vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    background-image: url(https://cdn.inspireuplift.com/uploads/images/seller_products/29625/1706848643_2512231001-vintage-my-neighbor-totoro-ghibli-svg-2512231001png.png);
+    background-size: 50%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.chat-form-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.chat-content {
+    font-weight: 500;
+    height: 300px;
+    overflow: auto;
+}
+
+.chat-input {
+    width: 70%;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 20px;
+    font-family: Akzidenz, system-ui, sans-serif;
+    font-size: 16px; 
+    font-weight: 700;
+}
+
+.chat-send-button {
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 20px;
+    font-family: Akzidenz, system-ui, sans-serif;
+    font-size: 20px; 
+    font-weight: 700;
+    text-transform: uppercase;
+
+    position: relative;
+    overflow: hidden;
+    transition: color 0.5 ease;
+}
+
+.chat-send-button::before {
+    content: 'SEND';
+    display: flex;            
+    justify-content: center;
+    align-items: center; 
+    color: white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('https://i.pinimg.com/originals/80/ec/a7/80eca70a4d933fd26f1f66444ab95107.jpg');
+    background-position: center;
+    background-size: cover;
+    opacity: 0;
+    transition: opacity 0.8s ease-in; 
+    z-index: 0;
+    text-shadow: 
+      -1px -1px 0 #000,  
+       1px -1px 0 #000,
+      -1px  1px 0 #000,
+       1px  1px 0 #000; 
+}
+
+.chat-send-button:hover::before {
+    opacity: 1;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 960px) {
+    .chat-header,
+    .user-list-header,
+    .chat-input {
+        font-size: 14px;
+    }
+
+}
+
+
 

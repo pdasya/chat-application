@@ -57,6 +57,7 @@ export default class Main {
         const chatUser = new Tag('div', { class: 'chat-header-user' });
         const chatUserStatus = new Tag('div', { class: 'chat-header-user-status' });
         const chatContent = new Tag('p', { class: 'chat-content' });
+        const formWrapper = new Tag('div', { class: 'chat-form-wrapper' });
         const chatInput = new Tag<HTMLInputElement>('input', {
             type: 'text',
             placeholder: 'Type your message here...',
@@ -64,18 +65,21 @@ export default class Main {
         });
         const chatSendButton = new Tag('button', { class: 'chat-send-button' });
         chatSendButton.addText('Send');
+        formWrapper.addChild(chatInput.render());
+        formWrapper.addChild(chatSendButton.render());
         chatInput.element.style.display = 'none';
         chatSendButton.element.style.display = 'none';
 
         chatHeader.addText('Communication area');
-        chatContent.addText('Messages will appear here.');
+        chatContent.addText('Messages will appear here. Choose user to chat.');
 
         chatHeader.addChild(chatUser.render());
         chatHeader.addChild(chatUserStatus.render());
         chatWrapper.addChild(chatHeader.render());
         chatWrapper.addChild(chatContent.render());
-        chatWrapper.addChild(chatInput.render());
-        chatWrapper.addChild(chatSendButton.render());
+        chatWrapper.addChild(formWrapper.render());
+        // chatWrapper.addChild(chatInput.render());
+        // chatWrapper.addChild(chatSendButton.render());
         this.main.addChild(chatWrapper.render());
 
         chatSendButton.element.addEventListener('click', () => {
