@@ -188,7 +188,7 @@ export default class WebSocketClient {
     public onInactiveUsers?: (users: Array<{ login: string; isLogined: boolean }>) => void;
     public onMessageReceived?: (message: ReceivedMessageResponse['payload']['message']) => void;
     public onMessageHistoryReceived?: (messages: Message[]) => void;
-    private messages: Message[] = [];
+    public messages: Message[] = [];
     public sessionID: string;
 
     constructor(url: string) {
@@ -510,6 +510,22 @@ export default class WebSocketClient {
         const message = this.messages.find((msg) => msg.id === response.payload.message.id);
         if (message) {
             message.status.isReaded = true;
+        }
+    }
+
+    markMessageAsRead(messageId: string): void {
+        const request = {
+            id: this.generateUniqueId(),
+            type: 'MSG_READ',
+            payload: {
+                message: {
+                    id: messageId,
+                },
+            },
+        };
+        if (this.ws.readyState === WebSocket.OPEN) {
+            this.ws.send(JSON.stringify(request));
+            console.log('Marking message as read:', messageId);
         }
     }
 }

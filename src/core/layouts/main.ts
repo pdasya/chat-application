@@ -57,6 +57,10 @@ export default class Main {
         const chatUser = new Tag('div', { class: 'chat-header-user' });
         const chatUserStatus = new Tag('div', { class: 'chat-header-user-status' });
         const chatContent = new Tag('p', { class: 'chat-content' });
+
+        chatContent.element.addEventListener('scroll', () => this.markMessagesAsRead());
+        chatContent.element.addEventListener('click', () => this.markMessagesAsRead());
+
         const formWrapper = new Tag('div', { class: 'chat-form-wrapper' });
         const chatInput = new Tag<HTMLInputElement>('input', {
             type: 'text',
@@ -85,6 +89,7 @@ export default class Main {
         chatSendButton.element.addEventListener('click', () => {
             this.sendMessage(chatInput.element.value);
             chatInput.element.value = '';
+            this.markMessagesAsRead();
         });
 
         chatInput.element.addEventListener('keypress', (event: KeyboardEvent) => {
@@ -92,6 +97,7 @@ export default class Main {
                 this.sendMessage(chatInput.element.value);
                 chatInput.element.value = '';
                 event.preventDefault();
+                this.markMessagesAsRead();
             }
         });
     }
@@ -252,15 +258,31 @@ export default class Main {
         const chatContent = document.querySelector('.chat-content');
         if (chatContent) {
             const messageElement = document.createElement('p');
-            let statusText;
+            messageElement.classList.add('message');
+            messageElement.textContent = `${from} [${datetime.toLocaleTimeString()}]: ${text}`;
+
+            const statusSpan = document.createElement('span');
+            statusSpan.classList.add('status');
             if (isDelivered) {
-                statusText = isReaded ? 'Read' : 'Delivered';
+                statusSpan.textContent = isReaded ? ' (Read)' : ' (Delivered)';
+                statusSpan.classList.add(isReaded ? 'read' : 'delivered');
             } else {
-                statusText = 'Sending...';
+                statusSpan.textContent = ' (Sending...)';
+                statusSpan.classList.add('sending');
             }
-            messageElement.textContent = `${from} [${datetime.toLocaleTimeString()}]: ${text} (${statusText})`;
+
+            messageElement.appendChild(statusSpan);
             chatContent.appendChild(messageElement);
         }
+    }
+
+    private markMessagesAsRead(): void {
+        const messages = this.webSocketClient.messages.filter(
+            (msg) => !msg.status.isReaded && msg.from !== this.webSocketClient.getLoggedUserName()
+        );
+        messages.forEach((msg) => {
+            this.webSocketClient.markMessageAsRead(msg.id);
+        });
     }
 
     render(): HTMLElement {
