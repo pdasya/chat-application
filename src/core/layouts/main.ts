@@ -11,6 +11,7 @@ export default class Main {
         class: 'user-search-input',
     });
     private users: Array<{ login: string; isLogined: boolean }> = [];
+    private isChatOpen: boolean = false;
 
     constructor(webSocketClient: WebSocketClient) {
         this.main = new Tag('div', { class: 'main-app' });
@@ -63,6 +64,8 @@ export default class Main {
         });
         const chatSendButton = new Tag('button', { class: 'chat-send-button' });
         chatSendButton.addText('Send');
+        chatInput.element.style.display = 'none';
+        chatSendButton.element.style.display = 'none';
 
         chatHeader.addText('Communication area');
         chatContent.addText('Messages will appear here.');
@@ -163,9 +166,17 @@ export default class Main {
             const chatContent = chatWindow.querySelector('.chat-content') as HTMLElement;
 
             if (chatUser && chatUserStatus && chatContent) {
+                this.isChatOpen = true;
                 chatUser.textContent = user.login;
                 chatUserStatus.textContent = user.isLogined ? 'Online' : 'Offline';
                 chatContent.innerHTML = '';
+
+                const chatInput = document.querySelector('.chat-input') as HTMLElement;
+                const chatSendButton = document.querySelector('.chat-send-button') as HTMLElement;
+                if (chatInput && chatSendButton) {
+                    chatInput.style.display = '';
+                    chatSendButton.style.display = '';
+                }
 
                 this.webSocketClient.fetchMessageHistory(user.login);
             } else {
