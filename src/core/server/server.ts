@@ -153,16 +153,6 @@ interface MessageDeliveryStatusChange {
     };
 }
 
-// interface MessageReadStatusChangeRequest {
-//     id: string;
-//     type: 'MSG_READ';
-//     payload: {
-//         message: {
-//             id: string;
-//         };
-//     };
-// }
-
 interface MessageReadStatusChangeResponse {
     id: string;
     type: 'MSG_READ';
@@ -194,7 +184,7 @@ export default class WebSocketClient {
     constructor(url: string) {
         this.ws = new WebSocket(url);
         this.attachEventListeners();
-        this.currentUserLogin = 'def1';
+        this.currentUserLogin = null;
         this.currentUserPassword = 'def1';
         this.sessionID = `session_${Date.now()}_${Math.random().toString(36).substring(2)}`;
         this.loadSessionData();
