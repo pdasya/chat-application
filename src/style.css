@@ -17,7 +17,8 @@
     src: url('../src/assets/fonts/AkzidenzGroteskPro-Regular.otf') format('opentype');
 }
 
-body, html {
+body,
+html {
     height: 100%;
     margin: 0;
     display: flex;
@@ -57,13 +58,15 @@ ul {
     text-transform: uppercase;
 }
 
-.input-field, .login-form-submit, .login-form-about {
+.input-field,
+.login-form-submit,
+.login-form-about {
     width: 100%;
     padding: 10px;
     box-sizing: border-box;
     border-radius: 20px;
     font-family: Akzidenz, system-ui, sans-serif;
-    font-size: 16px; 
+    font-size: 16px;
     font-weight: 700;
 }
 
@@ -71,7 +74,8 @@ ul {
     border: solid 5px green;
 }
 
-.login-form-submit, .login-form-about {
+.login-form-submit,
+.login-form-about {
     text-transform: uppercase;
 
     position: relative;
@@ -81,9 +85,9 @@ ul {
 
 .login-form-submit::before {
     content: 'LOGIN';
-    display: flex;            
+    display: flex;
     justify-content: center;
-    align-items: center; 
+    align-items: center;
     color: white;
     position: absolute;
     top: 0;
@@ -94,13 +98,13 @@ ul {
     background-position: center;
     background-size: cover;
     opacity: 0;
-    transition: opacity 0.8s ease-in; 
+    transition: opacity 0.8s ease-in;
     z-index: 0;
-    text-shadow: 
-      -1px -1px 0 #000,  
-       1px -1px 0 #000,
-      -1px  1px 0 #000,
-       1px  1px 0 #000; 
+    text-shadow:
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000;
 }
 
 .login-form-submit:hover:not(:disabled):before {
@@ -110,9 +114,9 @@ ul {
 
 .login-form-about::before {
     content: 'ABOUT';
-    display: flex;            
+    display: flex;
     justify-content: center;
-    align-items: center; 
+    align-items: center;
     color: white;
     position: absolute;
     top: 0;
@@ -123,13 +127,13 @@ ul {
     background-position: center;
     background-size: cover;
     opacity: 0;
-    transition: opacity 0.8s ease-in; 
+    transition: opacity 0.8s ease-in;
     z-index: 0;
-    text-shadow: 
-      -1px -1px 0 #000,  
-       1px -1px 0 #000,
-      -1px  1px 0 #000,
-       1px  1px 0 #000; 
+    text-shadow:
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000;
 }
 
 .login-form-about:hover::before {
@@ -153,7 +157,7 @@ ul {
 .about-wrapper {
     height: 100vh;
     background-image: url('../src/assets/images/background-image-about.jpg');
-    background-size: cover; 
+    background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
 
@@ -194,7 +198,7 @@ ul {
     box-sizing: border-box;
     border-radius: 20px;
     font-family: Akzidenz, system-ui, sans-serif;
-    font-size: 16px; 
+    font-size: 16px;
     font-weight: 700;
     margin-top: 20px;
 
@@ -205,9 +209,9 @@ ul {
 
 .about-page-button::before {
     content: 'Back to auth page';
-    display: flex;            
+    display: flex;
     justify-content: center;
-    align-items: center; 
+    align-items: center;
     color: white;
     position: absolute;
     top: 0;
@@ -218,13 +222,13 @@ ul {
     background-position: center;
     background-size: cover;
     opacity: 0;
-    transition: opacity 0.8s ease-in; 
+    transition: opacity 0.8s ease-in;
     z-index: 0;
-    text-shadow: 
-      -1px -1px 0 #000,  
-       1px -1px 0 #000,
-      -1px  1px 0 #000,
-       1px  1px 0 #000; 
+    text-shadow:
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000;
 }
 
 .about-page-button:hover::before {
@@ -264,7 +268,7 @@ ul {
     box-sizing: border-box;
     border-radius: 20px;
     font-family: Akzidenz, system-ui, sans-serif;
-    font-size: 20px; 
+    font-size: 20px;
     font-weight: 700;
     text-transform: uppercase;
 
@@ -275,9 +279,9 @@ ul {
 
 .header-logout-button::before {
     content: 'LOGOUT';
-    display: flex;            
+    display: flex;
     justify-content: center;
-    align-items: center; 
+    align-items: center;
     color: white;
     position: absolute;
     top: 0;
@@ -288,13 +292,13 @@ ul {
     background-position: center;
     background-size: cover;
     opacity: 0;
-    transition: opacity 0.8s ease-in; 
+    transition: opacity 0.8s ease-in;
     z-index: 0;
-    text-shadow: 
-      -1px -1px 0 #000,  
-       1px -1px 0 #000,
-      -1px  1px 0 #000,
-       1px  1px 0 #000; 
+    text-shadow:
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000;
 }
 
 .header-logout-button:hover::before {
@@ -319,7 +323,7 @@ ul {
 
 .main-wrapper {
     /* background-image: url('../src/assets/images/background-image-main.jpg'); */
-    background-size: cover; 
+    background-size: cover;
     background-position: center;
     background-repeat: repeat;
 }
@@ -366,8 +370,8 @@ ul {
     content: '';
     position: absolute;
     left: 0;
-    top: 0; 
-    width: 20px; 
+    top: 0;
+    width: 20px;
     height: 20px;
     background-image: url('https://upload.wikimedia.org/wikipedia/commons/d/dc/Knockoff_Little_Totoro.svg');
     background-size: cover;
@@ -379,8 +383,8 @@ ul {
     content: '';
     position: absolute;
     left: 0;
-    top: 0; 
-    width: 20px; 
+    top: 0;
+    width: 20px;
     height: 20px;
     background-image: url('https://upload.wikimedia.org/wikipedia/commons/d/dc/Knockoff_Little_Totoro.svg');
     background-size: cover;
@@ -400,7 +404,7 @@ ul {
 
 .chat-notification {
     position: absolute;
-    bottom: 10px; 
+    bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
     padding: 10px;
@@ -448,7 +452,7 @@ ul {
     box-sizing: border-box;
     border-radius: 20px;
     font-family: Akzidenz, system-ui, sans-serif;
-    font-size: 16px; 
+    font-size: 16px;
     font-weight: 700;
 }
 
@@ -457,7 +461,7 @@ ul {
     box-sizing: border-box;
     border-radius: 20px;
     font-family: Akzidenz, system-ui, sans-serif;
-    font-size: 20px; 
+    font-size: 20px;
     font-weight: 700;
     text-transform: uppercase;
 
@@ -468,9 +472,9 @@ ul {
 
 .chat-send-button::before {
     content: 'SEND';
-    display: flex;            
+    display: flex;
     justify-content: center;
-    align-items: center; 
+    align-items: center;
     color: white;
     position: absolute;
     top: 0;
@@ -481,13 +485,13 @@ ul {
     background-position: center;
     background-size: cover;
     opacity: 0;
-    transition: opacity 0.8s ease-in; 
+    transition: opacity 0.8s ease-in;
     z-index: 0;
-    text-shadow: 
-      -1px -1px 0 #000,  
-       1px -1px 0 #000,
-      -1px  1px 0 #000,
-       1px  1px 0 #000; 
+    text-shadow:
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000;
 }
 
 .chat-send-button:hover::before {
@@ -525,6 +529,3 @@ ul {
         width: 70px;
     }
 }
-
-
-
